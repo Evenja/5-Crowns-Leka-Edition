@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>5-Crowns Leka</title>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #dc3545;
+            --primary-green: #28a745;
+            --background: #f8f9fa;
+            --text-dark: #2d3436;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            padding: 1rem;
+            margin: 0;
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text-dark);
+            font-size: 16px;
+        }
+
+        .welcome-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeOut 0.5s ease 3.5s forwards;
+        }
+
+        .welcome-message {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 90%;
+        }
+
+        .welcome-message h2 {
+            color: var(--primary-red);
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 1.8rem;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .content {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin: 1rem auto;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: var(--primary-red);
+            text-align: center;
+            font-size: 1.8rem;
+            margin: 0 0 1.5rem 0;
+            position: relative;
+        }
+
+        .setup {
+            margin-bottom: 1.5rem;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        button {
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1.2rem;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+            transition: transform 0.1s ease;
+            cursor: pointer;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #scoreGrid {
+            display: none;
+            margin-top: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow-x: auto;
+            display: block;
+        }
+
+        th {
+            background: var(--primary-green);
+            color: white;
+            padding: 1rem;
+            position: sticky;
+            left: 0;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            min-width: 120px;
+        }
+
+        .winner-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--primary-red);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 2000;
+            animation: blink 1s infinite;
+            max-width: 90%;
+        }
+
+        .score-list {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 2000;
+            width: 90%;
+            max-width: 400px;
+            display: none;
+        }
+
+        .score-list h3 {
+            color: var(--primary-red);
+            font-family: 'Luckiest Guy', cursive;
+            margin: 0 0 1.5rem 0;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .score-list div {
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .player-name {
+            font-family: 'Luckiest Guy', cursive;
+            color: var(--primary-red);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 1.2em;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .player-score {
+            font-family: 'Luckiest Guy', cursive;
+            color: var(--primary-green);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 1.2em;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .score-credit {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+        }
+
+        .score-credit span {
+            color: var(--primary-red);
+            font-weight: bold;
+        }
+
+        .reset-container {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            display: none;
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 1rem;
+                border-radius: 12px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            button {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-popup">
+        <div class="welcome-message">
+            <h2>Velkommen til 5 CROWNS Leka Edition!</h2>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>5-Crowns Leka Poengtavle</h1>
+        
+        <div class="setup">
+            <label>Antall spillere:</label>
+            <input type="number" id="numPlayers" min="2" max="6" value="2" onchange="validatePlayerCount(this)" oninput="enforceNumber(this)">
+            <button onclick="createPlayerInputs()">Bekreft antall</button>
+            
+            <div id="playerNames" style="margin-top: 1rem;"></div>
+            <button onclick="generateScoreGrid()" style="background: var(--primary-red);">Start spillet</button>
+        </div>
+
+        <div id="scoreGrid">
+            <table>
+                <thead id="scoreHeader"></thead>
+                <tbody id="scoreBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="reset-container">
+        <button class="reset-button" onclick="resetGame()" style="background: var(--primary-red);">Nullstill spillet</button>
+    </div>
+
+    <script>
+        let players = [];
+        let scores = [];
+
+        function showWelcomePopup() {
+            const welcomePopup = document.querySelector('.welcome-popup');
+            welcomePopup.style.animation = 'fadeOut 0.5s ease 3.5s forwards';
+            setTimeout(() => welcomePopup.remove(), 4000);
+        }
+
+        function createPlayerInputs() {
+            const numPlayers = document.getElementById('numPlayers').value;
+            let html = '';
+            for(let i = 1; i <= numPlayers; i++) {
+                html += `
+                    <label>Spiller ${i}:</label>
+                    <input type="text" id="player${i}" placeholder="Navn">
+                `;
+            }
+            document.getElementById('playerNames').innerHTML = html;
+        }
+
+        function generateScoreGrid() {
+            players = [];
+            const numPlayers = document.getElementById('numPlayers').value;
+            for(let i = 1; i <= numPlayers; i++) {
+                const name = document.getElementById(`player${i}`).value || `Spiller ${i}`;
+                players.push(name);
+            }
+
+            scores = Array.from({length: 13}, () => Array(players.length).fill(0));
+            
+            let headerHtml = '<tr><th>Runde</th>';
+            let bodyHtml = '';
+            
+            players.forEach((player, index) => {
+                headerHtml += `<th>${player}</th>`;
+            });
+            headerHtml += '</tr>';
+            
+            for(let round = 0; round < 13; round++) {
+                bodyHtml += `<tr><td>${round + 1}</td>`;
+                players.forEach((_, playerIndex) => {
+                    bodyHtml += `
+                        <td>
+                            <input type="number" 
+                                   data-round="${round}" 
+                                   data-player="${playerIndex}"
+                                   oninput="updateScore(this)">
+                        </td>
+                    `;
+                });
+                bodyHtml += '</tr>';
+            }
+            
+            document.getElementById('scoreHeader').innerHTML = headerHtml;
+            document.getElementById('scoreBody').innerHTML = bodyHtml;
+            document.getElementById('scoreGrid').style.display = 'block';
+            document.querySelector('.reset-container').style.display = 'block';
+        }
+
+        function updateScore(input) {
+            const round = parseInt(input.dataset.round);
+            const player = parseInt(input.dataset.player);
+            scores[round][player] = parseInt(input.value) || 0;
+            checkGameCompletion();
+        }
+
+        function checkGameCompletion() {
+            const allFilled = [...document.querySelectorAll('input[type="number"]')]
+                .every(input => input.value !== '');
+            
+            if(allFilled) {
+                showResults();
+            }
+        }
+
+         function validatePlayerCount(input) {
+            if (input.value > 6) {
+                input.value = 6; // Set the value to the maximum allowed
+            } else if (input.value < 2) {
+                 input.value = 2; // Set the value to the minimum allowed
+            }
+        }
+
+         function enforceNumber(input) {
+            input.value = input.value.replace(/[^0-9]/g, ''); //Remove non-numeric characters
+        }
+
+        function showResults() {
+            const totals = players.map((_, i) => 
+                scores.reduce((sum, round) => sum + round[i], 0)
+            );
+            
+            const minScore = Math.min(...totals); // Changed from maxScore to minScore
+            const winners = players.filter((_, i) => totals[i] === minScore); // Changed logic
+            
+            const winnerPopup = document.createElement('div');
+            winnerPopup.className = 'winner-popup';
+            winnerPopup.innerHTML = `
+                <h3>${winners.length > 1 ? 'UAVGJORT!' : 'VINNER!'}</h3>
+                <div>${winners.join('<br>')}</div>
+                <div>${minScore} poeng</div>
+            `;
+            
+            document.body.appendChild(winnerPopup);
+            
+            setTimeout(() => {
+                winnerPopup.remove();
+                showFinalResults(totals);
+            }, 3000);
+        }
+
+        function showFinalResults(totals) {
+            const sortedPlayers = players
+                .map((name, index) => ({ name, score: totals[index] }))
+                .sort((a, b) => a.score - b.score); // Changed sorting order
+            
+            const scoreList = document.createElement('div');
+            scoreList.className = 'score-list';
+            scoreList.innerHTML = `
+                <h3>FINALE RESULTAT</h3>
+                ${sortedPlayers.map((p, i) => `
+                    <div>${i+1}. 
+                        <span class="player-name">${p.name}</span> - 
+                        <span class="player-score">${p.score}</span>
+                    </div>
+                `).join('')}
+                <div class="score-credit">Laget av <span>@</span>Even Jakobsen - 2025</div>
+            `;
+            
+            document.body.appendChild(scoreList);
+            scoreList.style.display = 'block';
+            
+        }
+
+        function resetGame() {
+            players = [];
+            scores = [];
+            document.getElementById('scoreGrid').style.display = 'none';
+            document.getElementById('playerNames').innerHTML = '';
+            document.querySelectorAll('.winner-popup, .score-list').forEach(el => el.remove());
+            document.querySelector('.reset-container').style.display = 'none';
+            showWelcomePopup();
+        }
+
+        showWelcomePopup();
+    </script>
+</body>
+</html>
